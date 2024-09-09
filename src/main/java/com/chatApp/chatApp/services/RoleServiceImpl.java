@@ -2,6 +2,8 @@ package com.chatApp.chatApp.services;
 
 import com.chatApp.chatApp.dto.Response.RoleResponse;
 import com.chatApp.chatApp.dto.request.RoleRequest;
+import com.chatApp.chatApp.exception.AppException;
+import com.chatApp.chatApp.exception.ErrorCode;
 import com.chatApp.chatApp.mapper.RoleMapper;
 import com.chatApp.chatApp.model.Permission;
 import com.chatApp.chatApp.model.Role;
@@ -64,12 +66,18 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleResponse getRoleByName(String name) {
+        if (!roleRepository.existsByName(name)) {
+            throw new AppException(ErrorCode.ROLE_NOT_FOUND);
+        }
         return roleMapper.toRoleResponse(roleRepository.findByName(name));
     }
 
     @Override
     @Transactional
     public RoleResponse addRole(RoleRequest roleRequest) {
+        if(roleRepository.existsByName(roleRequest.getName())) {
+            throw new AppException(ErrorCode.ROLE_ALREADY_EXISTS);
+        }
 
         Set<Permission> permissions = roleRequest.getPermissions().stream()
                 .map(permissionRepository::findByName)
@@ -89,6 +97,9 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional
     public void deleteRoleByName(String name) {
+        if(!roleRepository.existsByName(name)) {
+            throw new AppException(ErrorCode.ROLE_NOT_FOUND);
+        }
         roleRepository.deleteByName(name);
     }
 }

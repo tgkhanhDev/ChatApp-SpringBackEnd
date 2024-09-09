@@ -61,6 +61,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public void deleteAccountById(String id) {
+        if (!accountRepository.existsById(id)) {
+            throw new AppException(ErrorCode.ACCOUNT_NOT_FOUND);
+        }
         accountRepository.deleteById(id);
     }
 

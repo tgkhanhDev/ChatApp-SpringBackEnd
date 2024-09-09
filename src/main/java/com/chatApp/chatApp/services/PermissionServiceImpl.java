@@ -65,6 +65,9 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     public PermissionResponse addPermission(PermissionRequest permissionRequest) {
+        if(permissionRepository.findByName(permissionRequest.getName()) != null) {
+            throw new AppException(ErrorCode.PERMISSION_ALREADY_EXISTS);
+        }
         Permission permission = permissionMapper.toPermission(permissionRequest);
         permissionRepository.save(permission);
         return permissionMapper.toPermissionResponse(permission);
@@ -73,6 +76,9 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     public void deletePermissionByName(String name) {
+        if (permissionRepository.findByName(name) == null) {
+            throw new AppException(ErrorCode.PERMISSION_NOT_FOUND);
+        }
         permissionRepository.deleteByName(name);
     }
 

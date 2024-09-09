@@ -22,7 +22,10 @@ public enum ErrorCode {
     UNAUTHENTICATED(405, "Unauthenticated, Your TOKEN may expired!", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(401, "You does not have permission", HttpStatus.FORBIDDEN),
     ROLE_INVALID(405, "Role invalid", HttpStatus.BAD_REQUEST),
-    PERMISSION_INVALID(401, "Permission invalid", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_FOUND(401, "Role not found", HttpStatus.BAD_REQUEST),
+    ROLE_ALREADY_EXISTS(401, "Role already existed", HttpStatus.BAD_REQUEST),
+    PERMISSION_INVALID(405, "Permission invalid", HttpStatus.BAD_REQUEST),
+    PERMISSION_ALREADY_EXISTS(401, "Permission already existed", HttpStatus.BAD_REQUEST),
     PERMISSION_NOT_FOUND(401, "Permission not found", HttpStatus.NOT_FOUND),
     INVALID_DOB(401, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_FOUND(404, "Account not found", HttpStatus.NOT_FOUND);
