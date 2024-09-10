@@ -67,8 +67,10 @@ public class AuthenticationService {
                     .build();
         }
 
+        String token = generateToken(account);
+
         return AuthenticationResponse.builder()
-                .token("123")
+                .token(token)
                 .code(200)
                 .authenticated(true)
                 .build();

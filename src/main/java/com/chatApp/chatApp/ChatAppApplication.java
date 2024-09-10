@@ -10,5 +10,5 @@ public class ChatAppApplication {
 		SpringApplication.run(ChatAppApplication.class, args);
 	}
 
-	//encode, decode password => authorize token => authentication
+	//what how the token work... https://connect2id.com/products/nimbus-jose-jwt => authorize token (Add Role into JWT) => authentication
 }
