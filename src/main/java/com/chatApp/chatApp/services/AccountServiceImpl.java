@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +29,16 @@ public class AccountServiceImpl implements AccountService {
     final AccountRepository accountRepository;
     final AccountMapper accountMapper;
     final RoleService roleService;
+    final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AccountServiceImpl(AccountRepository accountRepository, AccountMapper accountMapper,
-                              RoleRepository roleRepository, RoleService roleService) {
+                              RoleRepository roleRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
         this.roleRepository = roleRepository;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -50,6 +53,8 @@ public class AccountServiceImpl implements AccountService {
         if (accountRepository.existsByUsername(accountRequest.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
+
+        accountRequest.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
 
         //Give it the default Role... which will auto save into db
         Set<String> roles = roleService.generateDefaultRole();
@@ -90,7 +95,7 @@ public class AccountServiceImpl implements AccountService {
 
         account.setFirstName(accountRequest.getFirstName());
         account.setLastName(accountRequest.getLastName());
-        account.setPassword(accountRequest.getPassword());
+        account.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
         account.setDob(accountRequest.getDob());
         account.setRoles(accountRequest.getRoles());
 

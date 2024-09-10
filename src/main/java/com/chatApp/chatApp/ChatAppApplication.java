@@ -10,4 +10,5 @@ public class ChatAppApplication {
 		SpringApplication.run(ChatAppApplication.class, args);
 	}
 
+	//encode, decode password => authorize token => authentication
 }
