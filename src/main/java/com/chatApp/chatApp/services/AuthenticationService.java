@@ -5,7 +5,11 @@ import com.chatApp.chatApp.dto.request.AuthenticationRequest;
 import com.chatApp.chatApp.exception.AppException;
 import com.chatApp.chatApp.exception.ErrorCode;
 import com.chatApp.chatApp.model.Account;
+import com.chatApp.chatApp.model.Permission;
+import com.chatApp.chatApp.model.Role;
 import com.chatApp.chatApp.repositories.AccountRepository;
+import com.chatApp.chatApp.repositories.PermissionRepository;
+import com.chatApp.chatApp.repositories.RoleRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -20,10 +24,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 @Service
@@ -44,11 +50,14 @@ public class AuthenticationService {
     protected long REFRESHABLE_DURATION;
 
     final AccountRepository accountRepository;
+    final RoleRepository roleRepository;
 
     @Autowired
-    public AuthenticationService(AccountRepository accountRepository) {
+    public AuthenticationService(AccountRepository accountRepository, PermissionRepository permissionRepository,
+                                 RoleRepository roleRepository) {
 
         this.accountRepository = accountRepository;
+        this.roleRepository = roleRepository;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
@@ -84,6 +93,7 @@ public class AuthenticationService {
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
+                .claim("scope", buildScope(account))
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
@@ -98,5 +108,22 @@ public class AuthenticationService {
 
     }
 
+    private String buildScope(Account account) {
+        StringJoiner stringJoiner = new StringJoiner(" ");
+
+        if (!CollectionUtils.isEmpty(account.getRoles())) {
+            account.getRoles().forEach(role -> {
+                stringJoiner.add("ROLE_" + role);
+
+                Role roleModel = roleRepository.findByName(role);
+                if (!CollectionUtils.isEmpty(roleModel.getPermissions())) {
+                    roleModel.getPermissions().forEach(permission -> {
+                        stringJoiner.add(permission.getName());
+                    });
+                }
+            });
+        }
+        return stringJoiner.toString();
+    }
 
 }
