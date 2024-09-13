@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +29,13 @@ public class AccountController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VIEW_ACCOUNTS')")
     public ApiResponse<List<AccountResponse>> getAllAccount() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
         return ApiResponse.<List<AccountResponse>>builder()
                 .code(200)
                 .message("Get All Account Success")
@@ -36,6 +44,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('GUEST')")
     public ApiResponse<AccountResponse> getAccountById(@PathVariable String id) {
         return ApiResponse.<AccountResponse>builder()
                 .data(accountService.getAccountById(id))

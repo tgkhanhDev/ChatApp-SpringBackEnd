@@ -8,12 +8,14 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/role")
+//@PreAuthorize("hasAuthority('MANAGE_ROLES')")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 public class RoleController {
@@ -50,6 +52,15 @@ public class RoleController {
                 .code(200)
                 .message("Add Role Success")
                 .data(roleService.addRole(roleRequest))
+                .build();
+    }
+
+    @PutMapping("/{name}")
+    public ApiResponse<RoleResponse> updateRole(@RequestBody RoleRequest roleRequest, @PathVariable String name) {
+        return ApiResponse.<RoleResponse>builder()
+                .code(200)
+                .message("Update Role Success")
+                .data(roleService.updateRole(roleRequest, name))
                 .build();
     }
 

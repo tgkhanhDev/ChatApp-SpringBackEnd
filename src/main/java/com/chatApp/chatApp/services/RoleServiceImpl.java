@@ -96,6 +96,32 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
+    public RoleResponse updateRole(RoleRequest roleRequest, String name) {
+        if(!roleRepository.existsByName(name)) {
+            throw new AppException(ErrorCode.ROLE_NOT_FOUND);
+        }
+        Role role = roleRepository.findByName(name);
+        role.setDescription(roleRequest.getDescription());
+        Set<Permission> permissions = roleRequest.getPermissions().stream()
+                .map(permissionRepository::findByName)
+                .filter(Objects::nonNull)
+                .collect(java.util.stream.Collectors.toSet());
+        if (permissions.size() != roleRequest.getPermissions().size()) {
+            throw new RuntimeException("Permission not found");
+        }
+
+        log.info("role: {}", role);
+        log.info("permission: {}", permissions);
+
+        role.setPermissions(permissions);
+
+        roleRepository.save(role);
+        return roleMapper.toRoleResponse(role);
+
+    }
+
+    @Override
+    @Transactional
     public void deleteRoleByName(String name) {
         if(!roleRepository.existsByName(name)) {
             throw new AppException(ErrorCode.ROLE_NOT_FOUND);
