@@ -30,7 +30,7 @@ public class AccountController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('SCOPE_CR_ACCOUNT')")
+    @PreAuthorize("hasAuthority('CR_ACCOUNT')")
     public ApiResponse<List<AccountResponse>> getAllAccount() {
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,7 +45,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('SCOPE_CR_ACCOUNT')")
+    @PreAuthorize("hasAuthority('CR_ACCOUNT')")
     public ApiResponse<AccountResponse> getAccountById(@PathVariable String id) {
         return ApiResponse.<AccountResponse>builder()
                 .data(accountService.getAccountById(id))
@@ -64,7 +64,7 @@ public class AccountController {
     }
 
     @PutMapping("/updateAccount/{id}")
-    @PreAuthorize("hasAuthority('SCOPE_UD_ACCOUNT')")
+    @PreAuthorize("hasAuthority('UD_ACCOUNT')")
     public ApiResponse<AccountResponse> updateAccount(@RequestBody AccountRequest accountRequest, @PathVariable String id){
         return ApiResponse.<AccountResponse>builder()
                 .code(200)
@@ -74,7 +74,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/deleteAccount/{id}")
-    @PreAuthorize("hasAuthority('SCOPE_UD_ACCOUNT')")
+    @PreAuthorize("hasAuthority('UD_ACCOUNT')")
     public ApiResponse<String> deleteAccountById(@PathVariable String id){
         accountService.deleteAccountById(id);
         return ApiResponse.<String>builder()
@@ -84,7 +84,7 @@ public class AccountController {
     }
 
     @GetMapping("/myInfo")
-    @PreAuthorize("hasAuthority('SCOPE_VIEW_INFO')")
+    @PreAuthorize("hasAuthority('VIEW_INFO')")
     public ApiResponse<AccountResponse> getMyInfo(){
         return ApiResponse.<AccountResponse>builder()
                 .code(200)

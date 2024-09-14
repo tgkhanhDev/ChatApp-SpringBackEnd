@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/permissions")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@PreAuthorize("hasAuthority('SCOPE_CRUD_PERMISSION')")
+@PreAuthorize("hasAuthority('CRUD_PERMISSION')")
 public class PermissionController {
    final PermissionService permissionService;
 
