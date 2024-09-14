@@ -36,8 +36,8 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     public Set<Permission> generateDefaultPermissionSet() {
-        if (permissionRepository.findByName("VIEW_CHAT") != null) {
-            return Set.of(permissionRepository.findByName("VIEW_CHAT"));
+        if (permissionRepository.existsByName("VIEW_CHAT")) {
+            return Set.of(permissionRepository.findByName("VIEW_CHAT").orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_FOUND)));
         }
             Permission permission = Permission.builder()
                     .name("VIEW_CHAT")
@@ -55,19 +55,15 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public PermissionResponse getPermissionByName(String name) {
-        Permission permission = permissionRepository.findByName(name);
-        if (permission == null) {
-            throw new AppException(ErrorCode.PERMISSION_NOT_FOUND);
-        }
+        Permission permission = permissionRepository.findByName(name).orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_FOUND));
         return permissionMapper.toPermissionResponse(permission);
     }
 
     @Override
     @Transactional
     public PermissionResponse addPermission(PermissionRequest permissionRequest) {
-        if(permissionRepository.findByName(permissionRequest.getName()) != null) {
-            throw new AppException(ErrorCode.PERMISSION_ALREADY_EXISTS);
-        }
+        permissionRepository.findByName(permissionRequest.getName()).orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_FOUND));
+
         Permission permission = permissionMapper.toPermission(permissionRequest);
         permissionRepository.save(permission);
         return permissionMapper.toPermissionResponse(permission);
@@ -76,7 +72,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     public void deletePermissionByName(String name) {
-        if (permissionRepository.findByName(name) == null) {
+        if ( permissionRepository.findByName(name).isEmpty() ) {
             throw new AppException(ErrorCode.PERMISSION_NOT_FOUND);
         }
         permissionRepository.deleteByName(name);

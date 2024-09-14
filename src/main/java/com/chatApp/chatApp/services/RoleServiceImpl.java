@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -81,7 +82,8 @@ public class RoleServiceImpl implements RoleService {
 
         Set<Permission> permissions = roleRequest.getPermissions().stream()
                 .map(permissionRepository::findByName)
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(java.util.stream.Collectors.toSet());
         if (permissions.size() != roleRequest.getPermissions().size()) {
             throw new RuntimeException("Permission not found");
@@ -102,9 +104,11 @@ public class RoleServiceImpl implements RoleService {
         }
         Role role = roleRepository.findByName(name);
         role.setDescription(roleRequest.getDescription());
+
         Set<Permission> permissions = roleRequest.getPermissions().stream()
                 .map(permissionRepository::findByName)
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(java.util.stream.Collectors.toSet());
         if (permissions.size() != roleRequest.getPermissions().size()) {
             throw new RuntimeException("Permission not found");
