@@ -21,6 +21,7 @@ import java.util.Set;
 @Service
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
+
 public class PermissionServiceImpl implements PermissionService {
 
     final PermissionRepository permissionRepository;

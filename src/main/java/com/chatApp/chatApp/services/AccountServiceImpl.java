@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,6 +102,16 @@ public class AccountServiceImpl implements AccountService {
         account.setRoles(accountRequest.getRoles());
 
         return accountMapper.toAccountResponse(accountRepository.save(account));
+    }
+
+    @Override
+    public AccountResponse getMyInfo(){
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+
+        Account account = accountRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED));
+        System.out.println("My Info: "+ account.toString());
+        return accountMapper.toAccountResponse(account);
     }
 
 }

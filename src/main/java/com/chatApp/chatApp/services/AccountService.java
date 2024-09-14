@@ -14,4 +14,6 @@ public interface AccountService {
     void deleteAccountById(String id);
     AccountResponse getAccountById(String id);
     AccountResponse updateAccount(AccountRequest accountRequest, String id);
+
+    AccountResponse getMyInfo();
 }

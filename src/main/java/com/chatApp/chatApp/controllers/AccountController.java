@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +30,10 @@ public class AccountController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('VIEW_ACCOUNTS')")
+    @PreAuthorize("hasAuthority('SCOPE_CR_ACCOUNT')")
     public ApiResponse<List<AccountResponse>> getAllAccount() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("Username: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 
@@ -44,7 +45,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('GUEST')")
+    @PreAuthorize("hasAuthority('SCOPE_CR_ACCOUNT')")
     public ApiResponse<AccountResponse> getAccountById(@PathVariable String id) {
         return ApiResponse.<AccountResponse>builder()
                 .data(accountService.getAccountById(id))
@@ -63,6 +64,7 @@ public class AccountController {
     }
 
     @PutMapping("/updateAccount/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_UD_ACCOUNT')")
     public ApiResponse<AccountResponse> updateAccount(@RequestBody AccountRequest accountRequest, @PathVariable String id){
         return ApiResponse.<AccountResponse>builder()
                 .code(200)
@@ -72,11 +74,22 @@ public class AccountController {
     }
 
     @DeleteMapping("/deleteAccount/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_UD_ACCOUNT')")
     public ApiResponse<String> deleteAccountById(@PathVariable String id){
         accountService.deleteAccountById(id);
         return ApiResponse.<String>builder()
                 .code(200)
                 .message("Delete Account Success")
+                .build();
+    }
+
+    @GetMapping("/myInfo")
+    @PreAuthorize("hasAuthority('SCOPE_VIEW_INFO')")
+    public ApiResponse<AccountResponse> getMyInfo(){
+        return ApiResponse.<AccountResponse>builder()
+                .code(200)
+                .message("Get My Info Success")
+                .data(accountService.getMyInfo())
                 .build();
     }
 

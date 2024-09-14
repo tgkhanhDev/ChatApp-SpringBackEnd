@@ -18,6 +18,7 @@ import java.util.List;
 //@PreAuthorize("hasAuthority('MANAGE_ROLES')")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
+@PreAuthorize("hasAuthority('SCOPE_CRUD_ROLE')")
 public class RoleController {
 
     final RoleService roleService;
