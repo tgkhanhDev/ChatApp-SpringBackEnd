@@ -11,6 +11,7 @@ import com.chatApp.chatApp.exception.AppException;
 import com.chatApp.chatApp.model.InvalidatedToken;
 import com.chatApp.chatApp.services.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("")
-    public ApiResponse<AuthenticationResponse> authentication(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ApiResponse<AuthenticationResponse> authentication(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         AuthenticationResponse authenticationResponse = authenticationService.authenticate(authenticationRequest);
 
         if (!authenticationResponse.isAuthenticated()) {

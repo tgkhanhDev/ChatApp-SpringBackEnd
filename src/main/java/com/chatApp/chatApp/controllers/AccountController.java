@@ -5,6 +5,7 @@ import com.chatApp.chatApp.dto.Response.AccountResponse;
 import com.chatApp.chatApp.dto.request.AccountRequest;
 import com.chatApp.chatApp.model.Account;
 import com.chatApp.chatApp.services.AccountService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class AccountController {
     }
 
     @PostMapping("/createAccount")
-    public ApiResponse<AccountResponse> saveAccount(@RequestBody AccountRequest accountRequest){
+    public ApiResponse<AccountResponse> saveAccount(@Valid @RequestBody AccountRequest accountRequest){
         return ApiResponse.<AccountResponse>builder()
                 .code(200)
                 .message("Create Account Success")
@@ -65,7 +66,7 @@ public class AccountController {
 
     @PutMapping("/updateAccount/{id}")
     @PreAuthorize("hasAuthority('UD_ACCOUNT')")
-    public ApiResponse<AccountResponse> updateAccount(@RequestBody AccountRequest accountRequest, @PathVariable String id){
+    public ApiResponse<AccountResponse> updateAccount(@Valid @RequestBody AccountRequest accountRequest, @PathVariable String id){
         return ApiResponse.<AccountResponse>builder()
                 .code(200)
                 .message("Update Account Success")

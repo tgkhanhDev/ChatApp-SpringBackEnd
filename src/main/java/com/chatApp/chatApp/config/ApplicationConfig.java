@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class ApplicationConfig {
                     .username("SADMIN")
                     .password(passwordEncoder.encode("170504"))
                     .roles(Set.of(ERole.SADMIN.toString(), ERole.ADMIN.toString(), ERole.GUEST.toString()))
-                    .dob(new Date(20 - 8 - 2000))
+                    .dob( LocalDate.of(2004, 5, 17))
                     .firstName("ADMIN")
                     .lastName("CUTE")
                     .build();
