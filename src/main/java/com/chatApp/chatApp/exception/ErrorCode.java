@@ -16,7 +16,7 @@ public enum ErrorCode {
 
     UNCATEGORIZED(401, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_KEY(405, "Invalid message key", HttpStatus.BAD_REQUEST),
-    USER_EXISTED(401, "User already existed", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(400, "User already existed", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(400, "Độ dài tên phải tối thiểu {min} ký tự!", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(400, "Độ dài mật khẩu phải tối thiểu  {min} ký tự!", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(401, "Unauthenticated, Your TOKEN may expired!", HttpStatus.UNAUTHORIZED),

@@ -3,6 +3,7 @@ package com.chatApp.chatApp.dto.Response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -17,6 +18,6 @@ public class AccountResponse {
     String password;
     String firstName;
     String lastName;
-    Date dob;
+    LocalDate dob;
     Set<String> roles;
 }

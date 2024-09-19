@@ -33,7 +33,7 @@ public class DobValidator implements ConstraintValidator<DobConstraint, LocalDat
 
         long years =  ChronoUnit.YEARS.between(value, LocalDate.now());
 
-        log.info("Years: {}", years);
+//        log.info("Years: {}", years);
 
         return years >= min;
     }
