@@ -1,7 +1,7 @@
 FROM java:17
 LABEL authors="tgkhanhdev"
 
-EXPOSE 8080
+EXPOSE 8085
 
 ADD target/chatApp-server.jar chatApp-server.jar
 

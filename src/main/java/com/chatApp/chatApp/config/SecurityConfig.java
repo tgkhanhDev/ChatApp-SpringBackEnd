@@ -43,6 +43,12 @@ public class SecurityConfig {
                         request
                                 .requestMatchers(HttpMethod.POST, "/auth/introspect").permitAll() // Explicitly permit introspect
                                 .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_POST).permitAll()
+                                // Permit access to Swagger UI and API docs
+                                .requestMatchers("/v3/api-docs/**").permitAll() // Allow access to API docs
+                                .requestMatchers("/swagger-ui/**").permitAll() // Allow access to Swagger UI
+                                .requestMatchers("/swagger-resources/**").permitAll() // Allow access to Swagger resources
+                                .requestMatchers("/webjars/**").permitAll() // Allow access to Swagger UI webjars
+
                                 .anyRequest().authenticated()
         );
 
